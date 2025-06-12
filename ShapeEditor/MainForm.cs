@@ -8,7 +8,6 @@ namespace ShapeEditor
 {
     public partial class MainForm : Form
     {
-        // Элементы управления
         private ToolStrip mainToolStrip;
         private ComboBox thicknessComboBox;
         private ToolStripButton lineButton, rectangleButton, ellipseButton, polylineButton, polygonButton;
@@ -16,7 +15,6 @@ namespace ShapeEditor
         private ColorDialog colorDialog = new ColorDialog();
         private Bitmap drawingBitmap;
 
-        // Состояние приложения
         private DrawingHistory drawingHistory = new DrawingHistory();
         private Shape currentShape;
         private Point startPoint;
@@ -42,7 +40,6 @@ namespace ShapeEditor
             thicknessComboBox.Items.AddRange(new object[] { 1, 2, 3, 5, 8 });
             thicknessComboBox.SelectedIndex = 0;
 
-            // Создание кнопок
             lineButton = CreateToolButton("Line");
             rectangleButton = CreateToolButton("Rectangle");
             ellipseButton = CreateToolButton("Ellipse");
@@ -78,7 +75,6 @@ namespace ShapeEditor
 
         private void InitializeEventHandlers()
         {
-            // Обработчики кнопок
             lineButton.Click += (s, e) => currentShapeType = "Line";
             rectangleButton.Click += (s, e) => currentShapeType = "Rectangle";
             ellipseButton.Click += (s, e) => currentShapeType = "Ellipse";
@@ -93,7 +89,6 @@ namespace ShapeEditor
 
             mainToolStrip.Items[mainToolStrip.Items.Count - 1].Click += ColorButton_Click;
 
-            // Обработчики мыши
             pictureBoxCanvas.MouseDown += Canvas_MouseDown;
             pictureBoxCanvas.MouseMove += Canvas_MouseMove;
             pictureBoxCanvas.MouseUp += Canvas_MouseUp;
@@ -156,7 +151,6 @@ namespace ShapeEditor
                         {
                             if (typeof(Shape).IsAssignableFrom(type) && !type.IsAbstract)
                             {
-                                // Проверка: выводим имя найденного типа
                                 MessageBox.Show($"Найден тип: {type.Name}", "Отладка");
 
                                 ShapeFactory.RegisterShape(type.Name, () => (Shape)Activator.CreateInstance(type));
@@ -168,7 +162,6 @@ namespace ShapeEditor
                                 };
                                 button.Click += (s, ev) => currentShapeType = type.Name;
 
-                                // Добавляем кнопку перед разделителем перед кнопкой цвета
                                 int insertIndex = mainToolStrip.Items.Count - 3;
                                 mainToolStrip.Items.Insert(insertIndex, button);
 
