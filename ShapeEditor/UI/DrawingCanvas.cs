@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using ShapeEditor.Core;
 
@@ -99,10 +100,38 @@ namespace ShapeEditor.UI
 
         public void LoadPlugin(string pluginPath, ToolStrip toolStrip)
         {
-            _pluginService.LoadPlugin(pluginPath, toolStrip, shapeType =>
+            try
             {
-                CurrentShapeType = shapeType;
-            });
+                if (!File.Exists(pluginPath))
+                {
+                    MessageBox.Show("Файл плагина не найден");
+                    return;
+                }
+
+                string tempPath = Path.Combine(Path.GetTempPath(), Path.GetFileName(pluginPath));
+                File.Copy(pluginPath, tempPath, true);
+
+                _pluginService.LoadPlugin(tempPath, toolStrip, shapeType =>
+                {
+                    this.CurrentShapeType = shapeType;
+                    UpdateToolStripSelection(toolStrip, shapeType);
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка загрузки плагина: {ex.Message}");
+            }
+        }
+
+        private void UpdateToolStripSelection(ToolStrip toolStrip, string shapeType)
+        {
+            foreach (ToolStripItem item in toolStrip.Items)
+            {
+                if (item is ToolStripButton button)
+                {
+                    button.Checked = (button.Text == shapeType);
+                }
+            }
         }
 
         public void Undo()

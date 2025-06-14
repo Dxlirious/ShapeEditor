@@ -9,29 +9,65 @@ public class PluginService
     {
         try
         {
-            var assembly = Assembly.LoadFrom(pluginPath);
 
-            foreach (var type in assembly.GetTypes())
+            var pluginAssembly = Assembly.LoadFrom(pluginPath);
+
+            bool pluginLoaded = false;
+
+            foreach (var type in pluginAssembly.GetTypes())
             {
                 if (typeof(Shape).IsAssignableFrom(type) && !type.IsAbstract)
                 {
-                    ShapeFactory.RegisterShape(type.Name, () => (Shape)Activator.CreateInstance(type));
-
-                    var button = new ToolStripButton(type.Name)
+                    try
                     {
-                        DisplayStyle = ToolStripItemDisplayStyle.Text,
-                        Tag = pluginPath
-                    };
-                    button.Click += (s, e) => shapeTypeSetter(type.Name);
 
-                    int insertIndex = toolStrip.Items.Count - 3;
-                    toolStrip.Items.Insert(insertIndex, button);
+                        ShapeFactory.RegisterShape(type.Name, () =>
+                        {
+                            try
+                            {
+                                return (Shape)Activator.CreateInstance(type);
+                            }
+                            catch
+                            {
+                                return null;
+                            }
+                        });
+
+                        var button = new ToolStripButton(type.Name)
+                        {
+                            DisplayStyle = ToolStripItemDisplayStyle.Text,
+                            Tag = pluginPath
+                        };
+
+                        button.Click += (s, e) => shapeTypeSetter(type.Name);
+
+
+                        int insertIndex = toolStrip.Items.Count - 3;
+                        if (insertIndex < 0) insertIndex = 0;
+
+                        toolStrip.Items.Insert(insertIndex, button);
+
+                        pluginLoaded = true;
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Ошибка регистрации типа {type.Name}: {ex.Message}");
+                    }
                 }
             }
+
+            if (!pluginLoaded)
+            {
+                MessageBox.Show("Не найдено ни одного корректного класса фигуры в плагине");
+            }
+        }
+        catch (BadImageFormatException)
+        {
+            MessageBox.Show("Неверный формат DLL. Убедитесь, что плагин собран для правильной версии .NET");
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"Ошибка загрузки плагина: {ex.Message}", "Ошибка");
+            MessageBox.Show($"Критическая ошибка загрузки плагина: {ex.Message}");
         }
     }
 }
