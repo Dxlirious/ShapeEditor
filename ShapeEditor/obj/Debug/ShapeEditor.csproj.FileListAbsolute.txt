@@ -1,9 +1,0 @@
-A:\OOpopa\ShapeEditor\ShapeEditor\obj\Debug\ShapeEditor.csproj.AssemblyReference.cache
-A:\OOpopa\ShapeEditor\ShapeEditor\obj\Debug\ShapeEditor.Properties.Resources.resources
-A:\OOpopa\ShapeEditor\ShapeEditor\obj\Debug\ShapeEditor.csproj.GenerateResource.cache
-A:\OOpopa\ShapeEditor\ShapeEditor\obj\Debug\ShapeEditor.csproj.CoreCompileInputs.cache
-A:\OOpopa\ShapeEditor\ShapeEditor\bin\Debug\ShapeEditor.exe.config
-A:\OOpopa\ShapeEditor\ShapeEditor\bin\Debug\ShapeEditor.exe
-A:\OOpopa\ShapeEditor\ShapeEditor\bin\Debug\ShapeEditor.pdb
-A:\OOpopa\ShapeEditor\ShapeEditor\obj\Debug\ShapeEditor.exe
-A:\OOpopa\ShapeEditor\ShapeEditor\obj\Debug\ShapeEditor.pdb
