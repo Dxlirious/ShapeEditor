@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using ShapeEditor.Core;
 
 public class EllipseShape : Shape
 {

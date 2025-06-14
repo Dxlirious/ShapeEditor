@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using ShapeEditor.Core;
 
-public class Polygon : Shape
+public class Polyline : Shape
 {
     public List<Point> Points { get; set; } = new List<Point>();
     private bool isCompleted = false;
@@ -11,17 +12,9 @@ public class Polygon : Shape
     {
         if (Points.Count < 2) return;
 
-        if (FillColor != Color.Transparent)
-        {
-            using (var brush = new SolidBrush(FillColor))
-            {
-                graphics.FillPolygon(brush, Points.ToArray());
-            }
-        }
-
         using (var pen = new Pen(StrokeColor, StrokeThickness))
         {
-            graphics.DrawPolygon(pen, Points.ToArray());
+            graphics.DrawLines(pen, Points.ToArray());
         }
     }
 
@@ -40,23 +33,18 @@ public class Polygon : Shape
     public void CompleteShape()
     {
         isCompleted = true;
-        if (Points.Count > 2)
-        {
-            Points.Add(Points[0]);
-        }
     }
 
     public override string Serialize()
     {
         var pointsStr = string.Join(";", Points.Select(p => $"{p.X},{p.Y}"));
-        return $"Polygon|{pointsStr}|{StrokeColor.ToArgb()}|{StrokeThickness}|" +
-               $"{FillColor.ToArgb()}|{isCompleted}";
+        return $"Polyline|{pointsStr}|{StrokeColor.ToArgb()}|{StrokeThickness}|{isCompleted}";
     }
 
     public override Shape Deserialize(string data)
     {
         var parts = data.Split('|');
-        var shape = new Polygon();
+        var shape = new Polyline();
 
         var points = parts[1].Split(';')
             .Select(s => s.Split(','))
@@ -66,8 +54,7 @@ public class Polygon : Shape
 
         shape.StrokeColor = Color.FromArgb(int.Parse(parts[2]));
         shape.StrokeThickness = int.Parse(parts[3]);
-        shape.FillColor = Color.FromArgb(int.Parse(parts[4]));
-        shape.isCompleted = bool.Parse(parts[5]);
+        shape.isCompleted = bool.Parse(parts[4]);
 
         return shape;
     }
